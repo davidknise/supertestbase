@@ -39,7 +39,7 @@ namespace TestBase
         protected Dictionary<Type, Type> ConstructorExceptionTypeMap = new Dictionary<Type, Type>();
 
         public bool PartialMock { get; set; } = true;
-        public bool CallBase { get; set; } = true;
+        public bool CallBase { get; set; } = false;
         public MockBehavior MockBehavior { get; set; } = MockBehavior.Default;
         public bool TestConstructor { get; set; } = true;
 
