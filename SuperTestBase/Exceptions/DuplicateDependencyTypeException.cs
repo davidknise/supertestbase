@@ -4,7 +4,7 @@
 // *                                                       *
 // ********************************************************/
 
-namespace TestBase
+namespace SuperTestBase
 {
     using System;
 

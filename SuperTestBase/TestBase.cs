@@ -4,7 +4,7 @@
 // *                                                       *
 // ********************************************************/
 
-namespace TestBase
+namespace SuperTestBase
 {
     using Moq.Language;
     using Moq.Language.Flow;
