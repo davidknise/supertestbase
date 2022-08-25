@@ -8,9 +8,9 @@
 
 	<ItemGroup Condition=" '$(CompileIncludeSuperTestBase)' == 'true' ">
 		<Compile Include="..\SuperTestBase\*.cs" Link="%(Filename)%(Extension)" />
-		<Compile Include="..\SuperTestBase\Exceptions\*.cs" Link="Exceptions/%(Filename)%(Extension)" />
-		<Compile Include="..\SuperTestBase\Extensions\*.cs" Link="Extensions/%(Filename)%(Extension)" />
-		<Compile Include="..\SuperTestBase\TestData\*.cs"  Link="TestData/%(Filename)%(Extension)" />
+		<Compile Include="..\SuperTestBase\Exceptions\*.cs" Link="Exceptions\%(Filename)%(Extension)" />
+		<Compile Include="..\SuperTestBase\Extensions\*.cs" Link="Extensions\%(Filename)%(Extension)" />
+		<Compile Include="..\SuperTestBase\TestData\*.cs"  Link="TestData\%(Filename)%(Extension)" />
 	</ItemGroup>
 	
 </Project>
