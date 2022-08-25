@@ -8,7 +8,8 @@ namespace SuperTestBase
 {
     using System;
     using System.Reflection;
-    using Xunit;
+    using NUnit;
+    using NUnit.Framework;
 
     public partial class TestBase<T>
         where T : class
@@ -17,21 +18,21 @@ namespace SuperTestBase
         /// A shared method that uses reflection to test constructor injected dependencies for
         /// <see cref="DependencyNullException"/> error handling.
         /// </summary>
-        [Fact]
+        [TestCase]
         public virtual void Constructor()
         {
-            VerifyConstructorTest = VerifyConstructorTestxUnit;
+            VerifyConstructorTest = VerifyConstructorTestNUnit;
             ConstructorTest();
         }
 
-        private void VerifyConstructorTestxUnit(
+        private void VerifyConstructorTestNUnit(
             Action testAction,
             Type exceptionType)
         {
             TargetInvocationException reflectedActual = Assert.Throws<TargetInvocationException>(
                 () => testAction());
 
-            Assert.Equal(exceptionType, reflectedActual.InnerException?.GetType());
+            Assert.AreEqual(exceptionType, reflectedActual.InnerException?.GetType());
         }
     }
 }

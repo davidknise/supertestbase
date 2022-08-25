@@ -627,5 +627,98 @@ namespace SuperTestBase
                 }
             }
         }
+
+        protected virtual void ConstructorTest()
+        {
+            if (!TestConstructor)
+            {
+                // Skip test
+                return;
+            }
+
+            // InitializeMocks if they haven't already been
+            InitializeTestBase(false);
+
+            // Test each missing parameter
+            for (int parameterIndex = 0; parameterIndex < TestParameters.Length; parameterIndex++)
+            {
+                object[] constructorObjects = new object[TestParameters.Length];
+
+                for (int dependencyIndex = 0; dependencyIndex < TestParameters.Length; dependencyIndex++)
+                {
+                    object mockObject = null;
+
+                    if (parameterIndex != dependencyIndex)
+                    {
+                        mockObject = Objects[dependencyIndex];
+                    }
+
+                    constructorObjects[dependencyIndex] = mockObject;
+                }
+
+                Type parameterType = TestParameters[parameterIndex].ParameterType;
+
+                Type exceptionType = DefaultConstructorExceptionType;
+
+                if (ConstructorExceptionTypeMap.TryGetValue(parameterType, out Type overrideExceptionType))
+                {
+                    exceptionType = overrideExceptionType;
+                }
+
+                if (exceptionType == null)
+                {
+                    // Is an optional parameter
+                    continue;
+                }
+
+                if (!parameterType.IsInterface)
+                {
+                    if (parameterType == typeof(string)
+                         || parameterType.IsEnum)
+                    {
+                        TestConstructorInfo.Invoke(constructorObjects);
+                        continue;
+                    }
+
+                    // could be a class or func factory that gets validated
+                }
+
+                if (VerifyConstructorTest == null)
+                {
+                    VerifyConstructorTest = VerifyConstructorTestGeneric;
+                }
+
+                VerifyConstructorTest(
+                    () => TestConstructorInfo.Invoke(constructorObjects),
+                    exceptionType);
+            }
+        }
+
+        protected delegate void VerifyConstructorTestDelegate(Action testAction, Type exceptionType);
+        protected VerifyConstructorTestDelegate VerifyConstructorTest = null;
+
+        private void VerifyConstructorTestGeneric(
+            Action testAction,
+            Type exceptionType)
+        {
+            try
+            {
+                testAction();
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType() != typeof(TargetInvocationException))
+                {
+                    throw new ConstructorDependencyInjectionTestFailedException(typeof(TargetInvocationException), ex.GetType());
+                }
+
+                if (ex.InnerException?.GetType() != exceptionType)
+                {
+                    throw new ConstructorDependencyInjectionTestFailedException(exceptionType, ex.InnerException?.GetType());
+                }
+            }
+
+            throw new ConstructorDependencyInjectionTestFailedException(typeof(TargetInvocationException), null);
+        }
     }
 }
