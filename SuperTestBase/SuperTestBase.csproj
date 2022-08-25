@@ -7,8 +7,4 @@
 		<Company>Microsoft</Company>
   </PropertyGroup>
 
-	<ItemGroup>
-	  <Folder Include="TestData\" />
-	</ItemGroup>
-
 </Project>
