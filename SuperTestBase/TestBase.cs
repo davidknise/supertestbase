@@ -14,15 +14,17 @@ namespace SuperTestBase
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
-    using Xunit;
 
     /// <summary>
     /// A shared test base that can be used to provide auto-magic tests for classes.
     /// </summary>
     /// <typeparam name="T">The class under test of the derived type.</typeparam>
-    public abstract class TestBase<T>
+    public partial class TestBase<T>
         where T : class
     {
+        /// <summary>
+        /// The <see cref="Type"/> of the unit under test (UUT).
+        /// </summary>
         protected readonly Type Type;
 
         protected bool TestBaseIsInitialized = false;
@@ -38,7 +40,20 @@ namespace SuperTestBase
         protected Type DefaultConstructorExceptionType = typeof(ArgumentNullException);
         protected Dictionary<Type, Type> ConstructorExceptionTypeMap = new Dictionary<Type, Type>();
 
+        /// <summary>
+        /// If true, will create the mocked unit under test as a mock itself.
+        /// This allows for intra-class function mocking to attain test isolation.
+        /// Defaults to true.
+        /// </summary>
         public bool PartialMock { get; set; } = true;
+
+        /// <summary>
+        /// If <see cref="PartialMock"/> is true and this is true, class methods will not be mocked or verifiable.
+        /// </summary>
+        /// <remarks>
+        /// This is useful if the method under test does not call other class methods.
+        /// By turning on, this saves the need to instruct the Mocked object to callbase on the method under test.
+        /// </remarks>
         public bool CallBase { get; set; } = false;
         public MockBehavior MockBehavior { get; set; } = MockBehavior.Default;
         public bool TestConstructor { get; set; } = true;
@@ -66,6 +81,9 @@ namespace SuperTestBase
             }
         }
 
+        /// <summary>
+        /// The unit under test (UUT) with mocked dependencies constructor injected.
+        /// </summary>
         protected T Mocked
         {
             get
@@ -81,11 +99,18 @@ namespace SuperTestBase
             }
         }
 
+        /// <summary>
+        /// Default constructor that will initialize the testbase on test class creation.
+        /// </summary>
         public TestBase() : this(true)
         {
             // Default constructor initializes the test base
         }
 
+        /// <summary>
+        /// Allows the caller to choose to defer initializing the UUT.
+        /// </summary>
+        /// <param name="initialize">If true, will initialize the UUT.</param>
         public TestBase(bool initialize)
         {
             Type = typeof(T);
@@ -96,16 +121,33 @@ namespace SuperTestBase
             }
         }
 
+        /// <summary>
+        /// If the mocked UUT has not been instantiated yet, this function will be called
+        /// before the mocked UUT is created.
+        /// 
+        /// Override this funciton in your test class to implement just in time setups.
+        /// </summary>
         protected virtual void GetMockedSetup()
         {
             // Stub will be overwritten
         }
-
+        
+        /// <summary>
+        /// If the mocked UUT has not been instantiated yet, this function will be called
+        /// after the mocked UUT is created.
+        /// 
+        /// Override this funciton in your test class to implement just in time setups.
+        /// </summary>
         protected virtual void GetMockedPostSetup()
         {
             // Stub will be overwritten
         }
 
+        /// <summary>
+        /// Instantiates the mocked unit under test as a <see cref="Mock"/> itself.
+        /// </summary>
+        /// <returns>The mocked unit under test as a <see cref="Mock"/> object.</returns>
+        /// <exception cref="MocksNotInitializedException">If the <see cref="Objects"/> array of dependencies is not instantiated.</exception>
         protected virtual Mock<T> GetMockObject()
         {
             if (Objects == null)
@@ -121,6 +163,11 @@ namespace SuperTestBase
             return mockObject;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="MocksNotInitializedException"></exception>
         protected virtual T GetMocked()
         {
             if (Objects == null)
@@ -578,73 +625,6 @@ namespace SuperTestBase
                     Type interfaceType = type.BaseType.GenericTypeArguments[0];
                     ExplicitMocks.Add(interfaceType, type);
                 }
-            }
-        }
-
-        /// <summary>
-        /// A shared method that uses reflection to test constructor injected dependencies for
-        /// <see cref="DependencyNullException"/> error handling.
-        /// </summary>
-        [Fact]
-        [Trait("Category", "Unit")]
-        public virtual void Constructor()
-        {
-            if (!TestConstructor)
-            {
-                // Skip test
-                return;
-            }
-
-            // InitializeMocks if they haven't already been
-            InitializeTestBase(false);
-
-            // Test each missing parameter
-            for (int parameterIndex = 0; parameterIndex < TestParameters.Length; parameterIndex++)
-            {
-                object[] constructorObjects = new object[TestParameters.Length];
-
-                for (int dependencyIndex = 0; dependencyIndex < TestParameters.Length; dependencyIndex++)
-                {
-                    object mockObject = null;
-
-                    if (parameterIndex != dependencyIndex)
-                    {
-                        mockObject = Objects[dependencyIndex];
-                    }
-
-                    constructorObjects[dependencyIndex] = mockObject;
-                }
-
-                Type parameterType = TestParameters[parameterIndex].ParameterType;
-
-                Type exceptionType = DefaultConstructorExceptionType;
-
-                if (ConstructorExceptionTypeMap.TryGetValue(parameterType, out Type overrideExceptionType))
-                {
-                    exceptionType = overrideExceptionType;
-                }
-
-                if (exceptionType == null)
-                {
-                    // Is an optional parameter
-                    continue;
-                }
-
-                if (!parameterType.IsInterface)
-                {
-                    if (parameterType == typeof(string) ||
-                        parameterType.IsEnum)
-                    {
-                        TestConstructorInfo.Invoke(constructorObjects);
-                        continue;
-                    }
-
-                    // could be a class or func factory that gets validated
-                }
-
-                TargetInvocationException reflectedActual = Assert.Throws<TargetInvocationException>(() => TestConstructorInfo.Invoke(constructorObjects));
-
-                Assert.Equal(exceptionType, reflectedActual.InnerException?.GetType());
             }
         }
     }
