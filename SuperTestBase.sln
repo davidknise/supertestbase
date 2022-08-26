@@ -3,16 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32804.467
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperTestBase", "SuperTestBase\SuperTestBase.csproj", "{18F4224B-8658-4C8D-876B-1A43E398683A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperTestBase", "src\SuperTestBase\SuperTestBase.csproj", "{18F4224B-8658-4C8D-876B-1A43E398683A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperTestBase.xUnit", "SuperTestBase.xUnit\SuperTestBase.xUnit.csproj", "{9A5C66F2-AA10-4048-8CA5-9C33C883A497}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperTestBase.xUnit", "src\SuperTestBase.xUnit\SuperTestBase.xUnit.csproj", "{9A5C66F2-AA10-4048-8CA5-9C33C883A497}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperTestBase.NUnit", "src\SuperTestBase.NUnit\SuperTestBase.NUnit.csproj", "{02C68EE0-DFA1-448B-8BB3-92B957F0099A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{47758856-35C7-480D-B3AC-A7156856AD43}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperTestBase.NUnit", "SuperTestBase.NUnit\SuperTestBase.NUnit.csproj", "{02C68EE0-DFA1-448B-8BB3-92B957F0099A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{79F3AAB7-A365-46EF-9092-ABD0B68972A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{18F4224B-8658-4C8D-876B-1A43E398683A} = {79F3AAB7-A365-46EF-9092-ABD0B68972A7}
+		{9A5C66F2-AA10-4048-8CA5-9C33C883A497} = {79F3AAB7-A365-46EF-9092-ABD0B68972A7}
+		{02C68EE0-DFA1-448B-8BB3-92B957F0099A} = {79F3AAB7-A365-46EF-9092-ABD0B68972A7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C4AE3B4B-1AD0-4775-B6AE-FAD239E7B409}
