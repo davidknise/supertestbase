@@ -69,7 +69,8 @@ namespace SampleApp.Tests
             MockDependency.Verify(mock => mock.DoSomethingElse(whatToDo), !doSomething ? Times.Once : Times.Never);
 
             // It does not write an exception message
-            MockLogger.Verify(mock => mock.Write(It.IsAny<string>()), Times.Never);
+            // Because it calls Write in other functions, we have to specify a more specific verification of the string
+            MockLogger.Verify(mock => mock.Write(It.Is<string>(s => s.Contains("Exception message:"))), Times.Never);
         }
 
         [Theory]

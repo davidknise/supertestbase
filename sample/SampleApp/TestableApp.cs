@@ -64,7 +64,7 @@ namespace SampleApp
 
         internal virtual bool ShouldDoSomething(string value)
         {
-            return string.Equals(value, "DoSomething", StringComparison.Ordinal);
+            return string.Equals(value, "DoSomething", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

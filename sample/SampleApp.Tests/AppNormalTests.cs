@@ -51,7 +51,8 @@ namespace SampleApp.Tests
             MockDependency.Verify(mock => mock.DoSomethingElse(It.IsAny<string>()), Times.Never);
 
             // It does not write an exception message
-            MockLogger.Verify(mock => mock.Write(It.IsAny<string>()), Times.Never);
+            // Because it calls Write in other functions, we have to specify a more specific verification of the string
+            MockLogger.Verify(mock => mock.Write(It.Is<string>(s => s.Contains("Exception message:"))), Times.Never);
         }
 
         [Fact]
@@ -131,7 +132,8 @@ namespace SampleApp.Tests
             MockDependency.Verify(mock => mock.DoSomethingElse("DoSomethingElse"), Times.Once);
 
             // It does not write an exception message
-            MockLogger.Verify(mock => mock.Write(It.IsAny<string>()), Times.Never);
+            // Because it calls Write in other functions, we have to specify a more specific verification of the string
+            MockLogger.Verify(mock => mock.Write(It.Is<string>(s => s.Contains("Exception message:"))), Times.Never);
         }
 
         [Fact]
@@ -147,7 +149,7 @@ namespace SampleApp.Tests
 
             MockDependency
                 .Setup(mock => mock.GetSomethingToDo())
-                .Returns("DoSomething");
+                .Returns("DoSomethingElse");
 
             var expectedException = new Exception("Dependency.DoSomethingElse().mock");
             MockDependency

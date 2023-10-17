@@ -41,12 +41,14 @@
             MockDependency.Verify(mock => mock.GetSomethingToDo(), Times.Once);
 
             // It does stuff
-            MockObject.Verify(mock => mock.DoStuff("Dependency.GetSomethingToDo().mock"), Times.Once;
+            MockObject.Verify(mock => mock.DoStuff("Dependency.GetSomethingToDo().mock"), Times.Once);
         }
 
         [Fact]
         public void Setup_Test()
         {
+            // When a function is virtual, it is mocked out by default on the unit under test
+            // To tell the TestBase (and Moq) to call it, you'll see the following:
             SetupCallBase(mock => mock.Setup());
 
             Mocked.Setup();
@@ -55,36 +57,34 @@
             MockLogger.Verify(mock => mock.Write("message.fake"), Times.Once);
         }
 
+        private void Setup_DoStuff(bool shouldDoSomething)
+        {
+            SetupCallBase(mock => mock.DoStuff(It.IsAny<string>()));
+
+            MockObject
+                .Setup(mock => mock.ShouldDoSomething(It.IsAny<string>()))
+                .Returns(shouldDoSomething);
+        }
+
         [Theory]
         [ClassData(typeof(TrueOrFalse))]
         public void DoStuff_Success(bool shouldDoSomething)
         {
-            MockObject
-                .Setup(mock => mock.ShouldDoSomething(It.IsAny<string>()))
-                .Returns(shouldDoSomething);
+            Setup_DoStuff(shouldDoSomething);
 
             bool actual = Mocked.DoStuff("value.fake");
 
-            // It determines what to do
-            MockObject.Verify(mock => mock.ShouldDoSomething("value.fake"), Times.Once);
+            // It succeeds
+            Assert.True(actual);
 
-            // It either does something
-            MockDependency.Verify(mock => mock.DoSomething("value.fake"), TimesExt.OnceOrNever(shouldDoSomething));
-
-            // Or it does something else
-            MockDependency.Verify(mock => mock.DoSomethingElse("value.fake"), TimesExt.OnceOrNever(!shouldDoSomething));
-
-            // It does not write an exception message
-            MockLogger.Verify(mock => mock.Write(It.IsAny<string>()), Times.Never);
+            Verify_DoStuff(shouldDoSomething);
         }
 
         [Theory]
         [ClassData(typeof(TrueOrFalse))]
         public void DoStuff_Throws(bool shouldDoSomething)
         {
-            MockObject
-                .Setup(mock => mock.ShouldDoSomething(It.IsAny<string>()))
-                .Returns(shouldDoSomething);
+            Setup_DoStuff(shouldDoSomething);
 
             Exception expectedException;
 
@@ -109,24 +109,42 @@
             // It does not fail or throw due to try-catchy
             Assert.False(actual);
 
-            // It determines what to do
+            Verify_DoStuff(shouldDoSomething, expectedException);
+        }
+
+        private void Verify_DoStuff(bool shouldDoSomething, Exception expectedException = null)
+        {// It determines what to do
             MockObject.Verify(mock => mock.ShouldDoSomething("value.fake"), Times.Once);
 
-            // It either tries to do something
+            // It either does something
             MockDependency.Verify(mock => mock.DoSomething("value.fake"), TimesExt.OnceOrNever(shouldDoSomething));
 
-            // Or it tries to do something else
+            // Or it does something else
             MockDependency.Verify(mock => mock.DoSomethingElse("value.fake"), TimesExt.OnceOrNever(!shouldDoSomething));
 
-            // It writes the exception message and fails
-            MockLogger.Verify(mock => mock.Write($"Exception message: {expectedException.Message}"), Times.Once);
+            if (expectedException == null)
+            {
+                // It does not write an exception message
+                MockLogger.Verify(mock => mock.Write(It.IsAny<string>()), Times.Never);
+            }
+            else
+            {
+
+                // It writes the exception message and fails
+                MockLogger.Verify(mock => mock.Write($"Exception message: {expectedException.Message}"), Times.Once);
+            }
+        }
+
+        private void Setup_ShouldDoSomething()
+        {
+            SetupCallBase(mock => mock.ShouldDoSomething(It.IsAny<string>()));
         }
 
         [Theory]
         [ClassData(typeof(IsNullOrWhiteSpaceTestData))]
         public void ShouldDoSomething_IsNullOrWhiteSpace(string value)
         {
-            SetupCallBase(mock => mock.Setup());
+            Setup_ShouldDoSomething();
 
             bool actual = Mocked.ShouldDoSomething(value);
 
@@ -141,7 +159,7 @@
         [InlineData("DOSOMETHING", true)]
         public void ShouldDoSomething(string value, bool expected)
         {
-            SetupCallBase(mock => mock.Setup());
+            Setup_ShouldDoSomething();
 
             bool actual = Mocked.ShouldDoSomething(value);
 
