@@ -24,7 +24,7 @@ namespace SampleApp.Tests
             // If the constructor signature changes, every test has to be updated
             Mock<IDependency> MockDependency = new Mock<IDependency>();
             Mock<ILogger> MockLogger = new Mock<ILogger>();
-            var mocked = new App(MockDependency.Object, MockLogger.Object);
+            var mocked = new AppNormal(MockDependency.Object, MockLogger.Object);
 
             // It needs to return real values to change code flow in another function
             MockDependency
@@ -62,7 +62,7 @@ namespace SampleApp.Tests
             // If the constructor signature changes, every test has to be updated
             Mock<IDependency> MockDependency = new Mock<IDependency>();
             Mock<ILogger> MockLogger = new Mock<ILogger>();
-            var mocked = new App(MockDependency.Object, MockLogger.Object);
+            var mocked = new AppNormal(MockDependency.Object, MockLogger.Object);
 
             // It has to retest the whole call stack to test the error handling in DoStuff
 
@@ -105,7 +105,7 @@ namespace SampleApp.Tests
             // If the constructor signature changes, every test has to be updated
             Mock<IDependency> MockDependency = new Mock<IDependency>();
             Mock<ILogger> MockLogger = new Mock<ILogger>();
-            var mocked = new App(MockDependency.Object, MockLogger.Object);
+            var mocked = new AppNormal(MockDependency.Object, MockLogger.Object);
 
             // It needs to return real values to change code flow in another function
             MockDependency
@@ -143,7 +143,7 @@ namespace SampleApp.Tests
             // If the constructor signature changes, every test has to be updated
             Mock<IDependency> MockDependency = new Mock<IDependency>();
             Mock<ILogger> MockLogger = new Mock<ILogger>();
-            var mocked = new App(MockDependency.Object, MockLogger.Object);
+            var mocked = new AppNormal(MockDependency.Object, MockLogger.Object);
 
             // It has to retest the whole call stack to test the error handling in DoStuff
 
