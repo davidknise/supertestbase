@@ -1,21 +1,14 @@
-﻿// /********************************************************
-// *                                                       *
-// *   Copyright (C) Microsoft. All rights reserved.       *
-// *                                                       *
-// ********************************************************/
+﻿namespace SuperTestBase;
 
-namespace SuperTestBase
+using System;
+
+public class MocksNotInitializedException : Exception
 {
-    using System;
+    public Type Type { get; set; }
 
-    public class MocksNotInitializedException : Exception
+    public MocksNotInitializedException(Type type)
+        : base(string.Format("Mocks are not set to be initialized for the test class: {0}", type?.Name.ToString() ?? "Unknown"))
     {
-        public Type Type { get; set; }
-
-        public MocksNotInitializedException(Type type)
-            : base(string.Format("Mocks are not set to be initialized for the test class: {0}", type?.Name.ToString() ?? "Unknown"))
-        {
-            Type = type;
-        }
+        Type = type;
     }
 }

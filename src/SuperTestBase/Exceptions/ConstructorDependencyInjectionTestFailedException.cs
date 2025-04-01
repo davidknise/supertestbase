@@ -1,23 +1,16 @@
-﻿// /********************************************************
-// *                                                       *
-// *   Copyright (C) Microsoft. All rights reserved.       *
-// *                                                       *
-// ********************************************************/
+﻿namespace SuperTestBase;
 
-namespace SuperTestBase
+using System;
+
+public class ConstructorDependencyInjectionTestFailedException : Exception
 {
-    using System;
+    public Type Expected { get; set; }
 
-    public class ConstructorDependencyInjectionTestFailedException : Exception
+    public Type Actual { get; set; }
+
+    public ConstructorDependencyInjectionTestFailedException(Type expected, Type actual)
     {
-        public Type Expected { get; set; }
-
-        public Type Actual { get; set; }
-
-        public ConstructorDependencyInjectionTestFailedException(Type expected, Type actual)
-        {
-            Expected = expected;
-            Actual = actual;
-        }   
-    }
+        Expected = expected;
+        Actual = actual;
+    }   
 }

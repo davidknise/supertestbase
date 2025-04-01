@@ -1,21 +1,14 @@
-﻿// /********************************************************
-// *                                                       *
-// *   Copyright (C) Microsoft. All rights reserved.       *
-// *                                                       *
-// ********************************************************/
+﻿namespace SuperTestBase;
 
-namespace SuperTestBase
+using System;
+
+public class MockDoesNotExistException : Exception
 {
-    using System;
+    public Type Type { get; set; }
 
-    public class MockDoesNotExistException : Exception
+    public MockDoesNotExistException(Type type)
+        : base(string.Format("Mock does not exist: {0}", type?.Name.ToString() ?? "Unknown"))
     {
-        public Type Type { get; set; }
-
-        public MockDoesNotExistException(Type type)
-            : base(string.Format("Mock does not exist: {0}", type?.Name.ToString() ?? "Unknown"))
-        {
-            Type = type;
-        }
+        Type = type;
     }
 }

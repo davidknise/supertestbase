@@ -1,21 +1,14 @@
-﻿// /********************************************************
-// *                                                       *
-// *   Copyright (C) Microsoft. All rights reserved.       *
-// *                                                       *
-// ********************************************************/
+﻿namespace SuperTestBase;
 
-namespace SuperTestBase
+using System;
+
+public class MockTestException : Exception
 {
-    using System;
-
-    public class MockTestException : Exception
+    public MockTestException() : base()
     {
-        public MockTestException() : base()
-        {
-        }
+    }
 
-        public MockTestException(string message) : base(message)
-        {
-        }
+    public MockTestException(string message) : base(message)
+    {
     }
 }

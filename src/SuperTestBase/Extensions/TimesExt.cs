@@ -1,37 +1,30 @@
-﻿// /********************************************************
-// *                                                       *
-// *   Copyright (C) Microsoft. All rights reserved.       *
-// *                                                       *
-// ********************************************************/
+﻿namespace SuperTestBase;
 
-namespace SuperTestBase
+using Moq;
+
+public static class TimesExt
 {
-    using Moq;
-
-    public static class TimesExt
+    public static Times OnceOrNever(bool once)
     {
-        public static Times OnceOrNever(bool once)
+        if (once)
         {
-            if (once)
-            {
-                return Times.Once();
-            }
-            else
-            {
-                return Times.Never();
-            }
+            return Times.Once();
         }
-
-        public static Times ExactlyOrNever(int exactly)
+        else
         {
-            if (exactly <= 0)
-            {
-                return Times.Never();
-            }
-            else
-            {
-                return Times.Exactly(exactly);
-            }
+            return Times.Never();
+        }
+    }
+
+    public static Times ExactlyOrNever(int exactly)
+    {
+        if (exactly <= 0)
+        {
+            return Times.Never();
+        }
+        else
+        {
+            return Times.Exactly(exactly);
         }
     }
 }

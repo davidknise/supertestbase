@@ -1,21 +1,14 @@
-﻿// /********************************************************
-// *                                                       *
-// *   Copyright (C) Microsoft. All rights reserved.       *
-// *                                                       *
-// ********************************************************/
+﻿namespace SuperTestBase;
 
-namespace SuperTestBase
+using System;
+
+public class TestBaseMultipleConstructorException : Exception
 {
-    using System;
+    public Type Type { get; set; }
 
-    public class TestBaseMultipleConstructorException : Exception
+    public TestBaseMultipleConstructorException(Type type)
+        : base(string.Format("Type under BaseTest cannot have more than one constructor: {0}", type?.Name.ToString() ?? "Unknown"))
     {
-        public Type Type { get; set; }
-
-        public TestBaseMultipleConstructorException(Type type)
-            : base(string.Format("Type under BaseTest cannot have more than one constructor: {0}", type?.Name.ToString() ?? "Unknown"))
-        {
-            Type = type;
-        }
+        Type = type;
     }
 }
